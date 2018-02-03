@@ -4,36 +4,49 @@
 
 <br>
 
-### How to use
+### Intro
+Recently I made a small lecture for other students at Filmakademie. They requested an introduction lecture to using VEX. I did not focus on practical examples and fancy operations, but on syntax, capabalities and usage. During the lecture I got some ideas on extending the content. So I looked more into the topics and collected them along with explanations inside one hip file. This tutorial belongs to series of my posts at my [blog](https://jurajtomori.wordpress.com/). However because of the formatting and other limitations of Wordpress I decided to place it here. It will also be easier to keep track of changes.
+
+<br>
+
+### How to use it
 You can clone, or [directly download](https://github.com/jtomori/vex_tutorial/archive/master.zip) this repository.<br>
 It contains **examples.hipnc** and [**vex/include/myLib.h**](./vex/include/myLib.h) files which are full of various examples with explanations in comments.<br>
-Alternatively you can use this page for quick looking at the topics covered and some of the code that I include here as well. I am not including here all of the code since sometimes it might not make a lot of sense outside of Houdini.
+It is the best to check all the nodes with open *Geometry Spreadsheet* and *Console Output* windows to see values of attributes and output text. Alternatively you can use this page for quick looking at the topics covered and some of the code that I include here as well. I am not including here all of the code since sometimes it might not make a lot of sense outside of Houdini. Where necessary I include related functions from *myLib.h* or attach screenshots.
+
 
 <br>
 
 ### Topics
-* debugging, utputing text with printf()
-* hand editing of values in Geometry Spreadsheet, lock, delta lock
-* external vex files/libraries referencing
-* void functions
-* variable casting
-* function casting
-* accessing parameters from myself, another node, easy creation
-* accessing attributes from myself, another inputs
-* accessing volumes, from another inputs as well
-* function overloading
-* vector swizzling
-* accessing values in vectors, matrices, arrays
-* arrays: slicing, reversing, saving into attribs, changing file path example
-* escaping strings
-* checking for existence of attributes, auto attribute creation
-* optransform usage
-* accessing / changing prim intrinsics - vdb, prims, packed, abc
-* writing vex snippets, inlines in vops
-* structs, struct functions - limited OOP
-* functions returning an array, array of structs
-* including *math.h* - useful constants, xform orders
-* DOPs - accessing geometry, volumes, bindings, gas field vop, gas field wrangle, sop solver
+* [Reading parameter values](#reading-parameter-values)
+* [Reading attributes](#reading-attributes)
+* [Exporting attributes](#exporting-attributes)
+* [Reading arrays](#reading-arrays)
+* [Arrays](#arrays)
+* [Arrays and strings example](#arrays-and-strings-example)
+* [Checking for attributes](#checking-for-attributes)
+* [Automatic attribute creation](#automatic-attribute-creation)
+* [Getting transformation from OBJs](#getting-transformation-from-objs)
+* [Intrinsics](#intrinsics)
+* [VDB intrinsics](#vdb-intrinsics)
+* [Volumes](#volumes)
+* [VOPs / Using Snippets](#vops-using-snippets)
+* [VOPs / Using Inline Code](#vops-using-inline-code)
+* [DOPs / Gas Field Wrangle](#dops-gas-field-wrangle)
+* [DOPs / Geometry Wrangle](#dops-geometry-wrangle)
+* [Printing and formatting](#printing-and-formatting)
+* [Printing attributes](#printing-attributes)
+* [Including external VEX files](#including-external-vex-files)
+* [Include math.h](#include-mathh)
+* [Using macros](#using-macros)
+* [Functions](#functions)
+* [Functions overloading](#functions-overloading)
+* [Variables casting](#variables-casting)
+* [Vectors swizzling](#vectors-swizzling)
+* [Functions casting](#functions-casting)
+* [Structs](#structs)
+* [Structs in Attribute Wrangle](#structs-in-attribute-wrangle)
+
 
 <br>
 
@@ -74,6 +87,7 @@ v@P.y += up;
 v@myVec = 1.456;
 v@myVec += v@N.y;
 ```
+<br>
 
 #### Reading attributes
 ```C
@@ -109,6 +123,7 @@ P_new = lerp(P_new, P3, blendPig);
 
 v@P = P_new;
 ```
+<br>
 
 #### Exporting attributes
 ```C
@@ -145,8 +160,9 @@ i[]@myIntegerArray = {132, 456, 789};
 4[]@myMatrix4x4Array = array( matrix( ident() ), matrix( ident() ) * 9 );
 s[]@myStringArray = { "abc", "def", "efg" };
 ```
+<br>
 
-#### Reading Arrays
+#### Reading arrays
 ```C
 // this is how you can create local array variables and load array attributes
 vector myVectorArray [] = v[]@myVectorArray;
@@ -160,6 +176,7 @@ v@P.x *= a.yy; // you can access matrix components using this syntax
 v@P.y = 4[]@myMatrix4x4Array[1].ww;
 v@P.z = u[]@myVector2Array[1][0]; // this is how you can access array of vectors
 ```
+<br>
 
 #### Arrays
 ```C
@@ -192,6 +209,7 @@ vector vectors[] = { {1,2,3}, {4,5,6}, {7,8,9} };
 f[]@serializedVectors = serialize(vectors);
 v[]@unserializedFloats = unserialize(f[]@serializedVectors);
 ```
+<br>
 
 #### Arrays and strings example
 ```C
@@ -217,6 +235,7 @@ path = "/" + join(pathSplit, "/"); // convert array of strings into one string, 
 
 s@path = path; // output into the attribute
 ```
+<br>
 
 #### Checking for attributes
 ```C
@@ -227,6 +246,7 @@ i@hasN = hasattrib(0, "point", "N");
 i@hasOrient = hasattrib(0, "point", "orient");
 i@hasPscale = hasattrib(0, "point", "pscale");
 ```
+<br>
 
 #### Automatic attribute creation
 ```C
@@ -244,6 +264,7 @@ f@boo = v@Cd.y;
 // to be created, if you then have a typo and use v@CD instead
 // of v@Cd, node will report an error
 ```
+<br>
 
 #### Getting transformation from OBJs
 ```C
@@ -257,6 +278,7 @@ matrix xform = optransform(nodePath);
 
 v@P *= invert(xform);
 ```
+<br>
 
 #### Intrinsics
 ```C
@@ -350,6 +372,7 @@ if (@ptnum == 4) {
 // setting transform intrinsic inside IFs did not work correctly, so I do it at the end
 setprimintrinsic(0, "transform", @ptnum, xform, "set");
 ```
+<br>
 
 #### VDB intrinsics
 ```C
@@ -376,6 +399,7 @@ if (@ptnum == 1) {
     setprimintrinsic(0, "vdb_is_saved_as_half_float", @ptnum, 1, "set");
 }
 ```
+<br>
 
 #### Volumes
 ```C
@@ -396,6 +420,7 @@ f@density = lerp(den1, den2, chf("blend") );
 // volumes can be accessed with the same syntax as geometry attributes
 f@density = f@density * chf("scale");
 ```
+<br>
 
 #### VOPs / Using Snippets
 *Check Houdini project to get the best idea of how it works.*
@@ -421,6 +446,7 @@ noise = clamp(noise, 0, 1);
 
 color = lerp(frontColor, noise, 1-mix);
 ```
+<br>
 
 #### VOPs / Using Inline Code
 *Check Houdini project to get the best idea of how it works.*
@@ -440,8 +466,8 @@ vector noise_in = abs(noise);
 noise_in = clamp(noise_in, 0, 1);
 
 $color = lerp($frontColor, noise_in, 1-mix);
-
 ```
+<br>
 
 #### DOPs / Gas Field Wrangle
 *Check Houdini project to get the best idea of how it works.*
@@ -464,6 +490,7 @@ f@pig_in *= .9;
 // specify path to it
 //f@pig_in = volumesample(0, "pig_in", v@P - {0.01});
 ```
+<br>
 
 #### DOPs / Geometry Wrangle
 *Check Houdini project to get the best idea of how it works.*
@@ -474,6 +501,7 @@ f@pig_in *= .9;
 // to properly set "Input 1" in "Inputs" tab of this node
 v@P *= 1.1;
 ```
+<br>
 
 #### Printing and formatting
 ```C
@@ -550,6 +578,7 @@ printf(multiLine);
 
 printf("\n\n");
 ```
+<br>
 
 #### Printing attributes
 ```C
@@ -557,8 +586,9 @@ printf("s\@shop_materialpath (string): %+s, v\@P (vector): %+-10.3f, \@ptnum (in
 
 printf("\n\n");
 ```
+<br>
 
-#### Include VEX file
+#### Including external VEX files
 ```C
 #include "myLib.h"
 
@@ -575,6 +605,16 @@ printf("\n\n");
 
 myRemPoints(@ptnum);
 ```
+*From myLib.h:*
+```C
+// void functions do not return anything
+// "function" word is not required
+function void myRemPoints(int ptnum) {
+	if (ptnum > 30)
+    	removepoint(0, ptnum);
+}
+```
+<br>
 
 #### Include math.h
 ```C
@@ -641,8 +681,9 @@ part of the $HH/vex/include/math.h file:
 #define XFORM_ZYX       5       // Rotate order Z, Y, X
 */
 ```
+<br>
 
-#### Use macros
+#### Using macros
 ```C
 #include "myLib.h"
 
@@ -659,6 +700,19 @@ f@renamed_power = RENAMEDPOWER(2,2);
 // use macro function
 i@add_ten = ADDTEN(10);
 ```
+*From myLib.h:*
+```C
+// you can define constants and use them in your code
+#define MY_INT			123
+#define MY_FLOAT		3.1415926
+
+// you can also create alias to the function
+#define RENAMEDPOWER	pow
+
+// or use macros for defining new functions
+#define ADDTEN(val)	 	val+10
+```
+<br>
 
 #### Functions
 ```C
@@ -689,6 +743,45 @@ f@superRandom = superRandom(seeds);
 int items = 9;
 i[]@items = range(items);
 ```
+*From myLib.h:*
+```C
+// void functions do not return anything
+// "function" word is not required
+function void myRemPoints(int ptnum) {
+	if (ptnum > 30)
+    	removepoint(0, ptnum);
+}
+
+// function parameters are passed by reference automatically, without additional syntax
+// (function can modify value of original variable, not its copy)
+void scaleByTen(vector P) {
+	P *= 10;
+}
+
+// you can prevent changing input variable references
+void changeA(int a; const int b; int c) {
+	a += 10;
+	//b += 10; // uncommenting this line will result in error
+	c = a;
+	c += 4; // even though arguments are passed as references, they are not true references, c is still independent from a
+}
+
+// a function returning float value
+float superRandom(vector4 seeds) {
+	float out = rand(seeds.x * seeds.y * seeds.z * seeds.w);
+	return out;
+}
+
+// a function returnig an array
+int[] range(int max) {
+	int out[];
+
+	for(int i=0; i<max; i++) push(out, i);
+
+	return out;
+}
+```
+<br>
 
 #### Functions overloading
 ```C
@@ -715,6 +808,54 @@ v@Cd = randVal;
 p@a = set(v@P.x, v@P.y, v@P.z, 4);
 //p@a = set(v@P, 4); // uncomment this line and see the difference in geometry sphreadsheet
 ```
+*From myLib.h:*
+```C
+// normalize Normal vector by amount [0..1] with specified seed value
+vector randomizeN(vector N; float amount, seed) {
+	vector randDir;
+	
+	// getting different random value for each axis, scaling to [-1..1] range
+	randDir.x = rand(seed * 684.49848) * 2 - 1;
+	randDir.y = rand(seed * 178.46548) * 2 - 1;
+	randDir.z = rand(seed * 489.49856) * 2 - 1;
+	
+	randDir = normalize(randDir);
+
+	N = lerp(N, randDir, amount);
+	N = normalize(N);
+
+	return N;
+}
+
+// function has different set of arguments, but the same name
+vector randomizeN(vector N; float amount; vector4 seed) {
+	vector randDir;
+	
+	// getting different random value for each axis, scaling to [-1..1] range
+	randDir.x = rand(seed.x * 684.49848 * seed.w) * 2 - 1;
+	randDir.y = rand(seed.y * 178.46548 * seed.w) * 2 - 1;
+	randDir.z = rand(seed.z * 489.49856 * seed.w) * 2 - 1;
+	
+	randDir = normalize(randDir);
+
+	N = lerp(N, randDir, amount);
+	N = normalize(N);
+
+	return N;
+}
+
+// this function declaration returns different type
+// the function name does not really match its functionality, its just for the example
+float randomizeN(vector N; float amount; int seed) {
+	float randDir;
+	
+	// getting different random value for each axis, scaling to [-1..1] range
+	randDir = rand((float)seed * 684.49848) * 2 - 1;
+
+	return randDir;
+}
+```
+<br>
 
 #### Variables casting
 ```C
@@ -736,6 +877,7 @@ color = pow(color, 3); // make color more contrasty
 // assigning a float to vector will assign uniform vector: { color, color, color }
 v@Cd = color;
 ```
+<br>
 
 #### Vectors swizzling
 ```C
@@ -755,6 +897,7 @@ col = col.zzy; // this syntax is equivalent to following line
 
 v@Cd = col;
 ```
+<br>
 
 #### Functions casting
 ```C
@@ -774,6 +917,7 @@ v@Cd = dot(v@N, normalize( vector( rand(@ptnum) ) ) ) * 0.5 + 0.5;
 // this now works fine
 //v@Cd = length( vector( rand(v@P) ) ) * .5;
 ```
+<br>
 
 #### Structs
 ```C
@@ -864,6 +1008,106 @@ foreach(hipFile i;allHips) {
 }
 // result: [ dust_024.hip, odforce_file_001.hipnc, blood_123.hip ]
 ```
+*From myLib.h:*
+```C
+// vex also supoorts structs and methods associated with them
+struct myCustomMatrix {
+	// uninitialized variables
+	vector x, y, z;
+	
+	// variables with default values
+	vector translate = {0,0,0};
+	string comment = 'default comment';
+	float myPi = 3.14159265;
+	float uniformScale = 1.0;
+	float myArray[] = {1,2,3};
+}
+
+// struct for carrying information about our project file
+struct hipFile {
+	string base, ext;
+	int version = 1;
+
+	// you can create methods that operate on structs
+	// this method increases version by 1 and returns new version number
+	int incVersion() {
+		this.version++;
+		return this.version;
+	}
+
+	// inside a struct function, you can refer to struct fields by name as if they 
+	// were variables (for example, base is a shortcut for this.base).
+	// this method writes to console window / terminal
+	void printName() {
+		printf("this file has name: %s_%03d.%s\n", base, version, ext);
+	}
+
+	// returns a string with full file name
+	string getFullName() {
+		return sprintf("%s_%03d.%s", this.base, this.version, this.ext);
+	}
+}
+
+// we can create functions that operate on our structs and use their methods
+int compareHipFiles(hipFile A, B) {
+	int match = 0;
+	if (A->getFullName() == B->getFullName()) match = 1;
+
+	return match;
+}
+
+// func returning hipFile type
+// this function expects comma separated list of filenames and will 
+// return the first occurance of a hip file
+hipFile findFirstHipFile(string text) {
+	string inFiles[] = split(text, ",");
+	string hipParts[];
+
+	foreach(string file; inFiles) {
+		string parts[] = split(file, ".");
+		if (parts[-1] == "hip" || parts[-1] == "hipnc") {
+			hipParts = parts;
+			break;
+		}
+	}
+
+	// we can also return error state, warning() function is also available
+	if (len(hipParts) == 0) error("No houdini project found in this file list: %+s.", text);
+
+	string prefix[] = split(hipParts[0], "_");
+	int ver = atoi( prefix[-1] );
+	string base = join( prefix[:-1], "_");
+	string ext = hipParts[1];
+
+	hipFile out = hipFile(base, ext, ver);
+	return out;
+}
+
+// we can as well return an array of structs
+hipFile[] findAllHipFiles(string text) {
+	string inFiles[] = split(text, ",");
+	hipFile hips[];
+
+	foreach(string file; inFiles) {
+		string parts[] = split(file, ".");
+		if (parts[-1] == "hip" || parts[-1] == "hipnc") {
+			string prefix[] = split(parts[0], "_");
+			int ver = atoi( prefix[-1] );
+			string base = join( prefix[:-1], "_");
+			string ext = parts[1];
+
+			hipFile out = hipFile(base, ext, ver);
+			push(hips, out);
+		}
+	}
+
+	// output a warning when no Houdini projects were found
+	if (len(hips) == 0) warning("No Houdini projects found.");
+
+	return hips;
+}
+```
+<br>
 
 #### Structs in Attribute Wrangle
 ```C
@@ -896,8 +1140,8 @@ struct hipFile {
 
 #define MY_INT  123456
 ```
-
 <br>
+
 
 ### Resources & More
 In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
