@@ -472,7 +472,19 @@ $color = lerp($frontColor, noise_in, 1-mix);
 <br>
 
 #### DOPs / Volumes workflow
-tbd
+Here I will show basic steps of creating a simple custom DOP solver operating on volumes.
+
+1. At first we need to create a *DOP Object*, which is a container that will contain all our fields (volumes in DOPs), geometry and any other data. Object name is important, because later we will use it to access our data.
+![DOP Object](./img/dop_object_volume.jpg)
+2. In the second step we want to bring in a volume from SOPs. We can use *SOP Scalar Field* node. This node will create field *pig_in*, which you can see in *Geometry Spreadsheet*. *Use SOP Dimensions* option is handy as we do not need to set resolution, size and other parameters by hand. *Border Type* might be useful to have set to *Constant* as it will not introduce infinite streaks when voxels are touching boundaries. *SOP Path* points to the SOP we want to get volume from and *Primitive Number* will identify which volume primitive to import. *Default Operation* when set to *Set Initial* will import the field only at first simulated frame, if you want to import animated volume, set it to *Set Always*. *Data Name* is important as it will be unique identifier for our volume.
+![SOP Scalar Field](./img/sop_scalar_field.jpg)
+3. DOPs can contain lots of fields and therefore they are not visible by default. To display them in viewport, we can use *Scalar Field Visualization* node.
+![Scalar Field Visualization](./img/scalar_field_vis.jpg)
+4. If we want to sample different volume, or sample a volume at different location, we need to set up *Inputs* properly. This is needed for [*Gas Field Wrangle*](#dops--gas-field-wrangle) and *Gas Field VOP*.
+![Gas Field Wrangle Inputs](./img/gas_field_wrangle_inputs.jpg)
+![Gas Field VOP Inputs](./img/gas_field_vop_inputs.jpg)
+5. We can also use arbitrary SOP operators to process our DOP fields. We can do so by using *SOP Solver*. We just need to set *Data Name* to our field which we want to process.
+![Sop Solver volume](./img/sop_solver_volume.jpg)
 <br>
 
 #### DOPs / Gas Field Wrangle
@@ -499,7 +511,19 @@ f@pig_in *= .9;
 <br>
 
 #### DOPs / Geometry workflow
-tbd
+Here I will show basic steps of creating a simple custom DOP solver operating on volumes.
+
+1. At first we need to create a *DOP Object*, which is a container that will contain all our fields (volumes in DOPs), geometry and any other data. Object name is important, because later we will use it to access our data.
+![DOP Object](./img/dop_object_box.jpg)
+2. We can import a geometry from SOPs using *SOP Geometry* node. By enabling *Use External SOP* we can select a SOP we want to import. *Data Name* is usually set to *Geometry*.
+![SOP Geometry](./img/sop_geometry.jpg)
+3. If we want to use functions which take an input as an argument (looking up points, importing point attributes...) in [*Geometry Wrangle*](#dops--geometry-wrangle) or *Geometry VOP*, we need to set up our *Inputs* properly.
+![Geometry Wrangle](./img/geo_wrangle_inputs.jpg)
+![Geometry VOP](./img/geo_vop_inputs.jpg)
+Also note, that *Geometry Wrangle* and *Geometry VOP* have an option to use *Myself* in *Inputs* which is equivalent to previous settings.
+![Geometry VOP Myself](./img/geo_vop_inputs_myself.jpg)
+4. We can as well use *SOP Solver* to process our geometry in a SOP network.
+![SOP Solver geo](./img/sop_solver_geo.jpg)
 <br>
 
 #### DOPs / Geometry Wrangle
@@ -1153,11 +1177,10 @@ struct hipFile {
 <br>
 
 ### Todo
+* Fix snippet/inline error
 * IFs, else, conditional (ternary) operator
 * Loops and flow control, continue, break
 * Foreach, controlling from VEX, feedbacks, sop solver
-* DOPs / Volume wokflow
-* DOPs / Geometry workflow
 
 <br>
 
@@ -1165,7 +1188,7 @@ struct hipFile {
 In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
 For more practical and visual VEX examples check [Matt Estela's awesome wiki](http://www.tokeru.com/cgwiki/?title=HoudiniVex)<br>
 Another good source is *$HH/vex/include* folder which is full of VEX include files with many useful functions. *( $HH expands to /houdini_install_dir/houdini/ )*<br>
-VEX is well documented, [language referene](http://www.sidefx.com/docs/houdini/vex/lang) and [function pages](http://www.sidefx.com/docs/houdini/vex/functions/index.html) are very helpful.
+VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/vex/lang) and [functions] pages(http://www.sidefx.com/docs/houdini/vex/functions/index.html) are very helpful.
 
 <br>
 
