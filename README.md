@@ -1181,6 +1181,7 @@ struct hipFile {
 * IFs, else, conditional (ternary) operator
 * Loops and flow control, continue, break
 * Foreach, controlling from VEX, feedbacks, sop solver
+* DOPs - fetching other data (fields, geometry) directly from VEX
 
 <br>
 
