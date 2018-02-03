@@ -32,7 +32,9 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [Volumes](#volumes)
 * [VOPs / Using Snippets](#vops--using-snippets)
 * [VOPs / Using Inline Code](#vops--using-inline-code)
+* [DOPs / Volumes workflow](#dops--volumes-workflow)
 * [DOPs / Gas Field Wrangle](#dops--gas-field-wrangle)
+* [DOPs / Geometry workflow](#dops--geometry-workflow)
 * [DOPs / Geometry Wrangle](#dops--geometry-wrangle)
 * [Printing and formatting](#printing-and-formatting)
 * [Printing attributes](#printing-attributes)
@@ -469,6 +471,10 @@ $color = lerp($frontColor, noise_in, 1-mix);
 ```
 <br>
 
+#### DOPs / Volumes workflow
+tbd
+<br>
+
 #### DOPs / Gas Field Wrangle
 *Check Houdini project to get the best idea of how it works.*
 ```C
@@ -490,6 +496,10 @@ f@pig_in *= .9;
 // specify path to it
 //f@pig_in = volumesample(0, "pig_in", v@P - {0.01});
 ```
+<br>
+
+#### DOPs / Geometry workflow
+tbd
 <br>
 
 #### DOPs / Geometry Wrangle
@@ -1142,6 +1152,14 @@ struct hipFile {
 ```
 <br>
 
+### Todo
+* IFs, else, conditional (ternary) operator
+* Loops and flow control, continue, break
+* Foreach, controlling from VEX, feedbacks, sop solver
+* DOPs / Volume wokflow
+* DOPs / Geometry workflow
+
+<br>
 
 ### Resources & More
 In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
