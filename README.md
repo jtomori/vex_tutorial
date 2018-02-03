@@ -1188,7 +1188,7 @@ struct hipFile {
 In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
 For more practical and visual VEX examples check [Matt Estela's awesome wiki](http://www.tokeru.com/cgwiki/?title=HoudiniVex)<br>
 Another good source is *$HH/vex/include* folder which is full of VEX include files with many useful functions. *( $HH expands to /houdini_install_dir/houdini/ )*<br>
-VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/vex/lang) and [functions] pages(http://www.sidefx.com/docs/houdini/vex/functions/index.html) are very helpful.
+VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/vex/lang) and [functions](http://www.sidefx.com/docs/houdini/vex/functions/index.html) pages are very helpful.
 
 <br>
 
