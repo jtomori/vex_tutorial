@@ -12,7 +12,7 @@ Recently I made a small lecture for other students at Filmakademie. They request
 ### How to use it
 You can clone, or [directly download](https://github.com/jtomori/vex_tutorial/archive/master.zip) this repository.<br>
 It contains **examples.hipnc** and [**vex/include/myLib.h**](./vex/include/myLib.h) files which are full of various examples with explanations in comments.<br>
-It is the best to check all the nodes with open *Geometry Spreadsheet* and *Console Output* windows to see values of attributes and output text. Alternatively you can use this page for quick looking at the topics covered and some of the code that I include here as well. I am not including here all of the code since sometimes it might not make a lot of sense outside of Houdini. Where necessary I include related functions from *myLib.h* or attach screenshots.
+It is the best to check all the nodes with open *Geometry Spreadsheet* and *Console Output* windows to see values of attributes and output text. Alternatively you can use this page for quick looking at the topics covered and most of the code that I include here as well. I am not including here all of the code since sometimes it might not make a lot of sense outside of Houdini. Where necessary I include related functions from *myLib.h* or attach screenshots.
 
 
 <br>
@@ -30,10 +30,10 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [Intrinsics](#intrinsics)
 * [VDB intrinsics](#vdb-intrinsics)
 * [Volumes](#volumes)
-* [VOPs / Using Snippets](#vops-using-snippets)
-* [VOPs / Using Inline Code](#vops-using-inline-code)
-* [DOPs / Gas Field Wrangle](#dops-gas-field-wrangle)
-* [DOPs / Geometry Wrangle](#dops-geometry-wrangle)
+* [VOPs / Using Snippets](#vops--using-snippets)
+* [VOPs / Using Inline Code](#vops--using-inline-code)
+* [DOPs / Gas Field Wrangle](#dops--gas-field-wrangle)
+* [DOPs / Geometry Wrangle](#dops--geometry-wrangle)
 * [Printing and formatting](#printing-and-formatting)
 * [Printing attributes](#printing-attributes)
 * [Including external VEX files](#including-external-vex-files)
