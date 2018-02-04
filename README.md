@@ -36,6 +36,9 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [DOPs / Gas Field Wrangle](#dops--gas-field-wrangle)
 * [DOPs / Geometry workflow](#dops--geometry-workflow)
 * [DOPs / Geometry Wrangle](#dops--geometry-wrangle)
+* [Conditions](#conditions)
+* [Loops](#loops)
+* [Stopping For-Each SOP from VEX](#stopping-for--each-sop-from-vex)
 * [Printing and formatting](#printing-and-formatting)
 * [Printing attributes](#printing-attributes)
 * [Including external VEX files](#including-external-vex-files)
@@ -505,7 +508,8 @@ f@pig_in *= .9;
 // if we want to sample from another position, we also need
 // to set up "Input 1" properly
 // note that you can also sample from volumes in SOPs if you
-// specify path to it
+// specify path to it: set "Input 1" to *SOP* and point "SOP Path" 
+// to the volume you want to access
 //f@pig_in = volumesample(0, "pig_in", v@P - {0.01});
 ```
 <br>
@@ -535,6 +539,105 @@ Also note, that *Geometry Wrangle* and *Geometry VOP* have an option to use *Mys
 // to properly set "Input 1" in "Inputs" tab of this node
 v@P *= 1.1;
 ```
+<br>
+
+#### Conditions
+```C
+// it there is only one operation after if condition, this operation
+// can be written in the same line
+if (v@P.y < 0) v@Cd = {1,0,0};
+// or in any other line, since VEX is not indented language,
+// but this works only for one operation, else-if block will end with the first ; symbol
+else if (v@P.x < 0) 
+                    v@Cd = {0,1,0};
+// to execute more operations, we need to use a block of code in {} brackets
+else {
+    v@Cd = {0,0,1};
+    v@P += v@N;
+}
+
+// it is also possible to use conditional (ternary) operator with the following syntax
+// (condition) ? true : false
+v@P.x *= v@P.x > 0 ? 0.5 : 1.5;
+
+// and use of logical AND: &&, OR: || is also possible
+if (v@P.y < 0 && v@P.x > 0) v@P -= v@N * .3;
+if (v@Cd == {0,0,1} || v@Cd == {1,0,0}) v@P += v@N * .4;
+```
+
+<br>
+
+#### Loops
+*Check Houdini project to get the best idea of how it works.*
+```C
+// VEX uses common syntax for for-loops
+int valA = 2;
+for (int i=0; i<11; i++) {
+    valA *= 2;
+}
+i@valA = valA;
+
+// for convenient iterating over elements of an array we
+// can use foreach loop
+int nbs[] = nearpoints(0, v@P, .5);
+
+vector P_avg = {0};
+foreach(int nb_ptnum; nbs) {
+    P_avg += point(0, "P", nb_ptnum);
+}
+P_avg /= len(nbs);
+
+v@P = P_avg;
+
+// we can also stop the loop by using "break" keyword
+int valB = 5;
+for (int i=0; i<13; i++) {
+    valB *= 5;
+    if (valB > 10000000) break;
+}
+
+i@valB = valB;
+
+// we can also use "continue" keyword to jump to another loop cycle
+// in this example we average point position with positions of neighbours
+// which are above it in world space (their Y coordinate is larger)
+int pts[] = neighbours(0, @ptnum);
+
+vector P_avg_upper = {0};
+int count = 0;
+
+foreach(int nb_ptnum; pts) {
+    vector pos = point(0, "P", nb_ptnum);
+    if (pos.y <= v@P.y) continue;
+    P_avg_upper += pos;
+    count++;
+}
+
+P_avg_upper /= count;
+v@P = P_avg_upper;
+```
+
+<br>
+
+#### Stopping For-Each SOP from VEX
+```C
+// in this example we are offseting our points along X axis in each iteration
+//
+// it is also possible to control For-Each SOP loop from VEX
+// "Iterations" count in this loop is set to 300, however we want to stop the loop
+// when our X coordinate is higher then 30
+// to do so, we can use "Stop Condition" in the loop, when it equals to 1, the loop will end
+// in this parameter we can use hscript expression checking for detail attribute
+// and we can set this detail attribute from VEX
+// hscript expression: detail("../attribwrangle_move_a_bit", "repeat", "0") == 0
+
+v@P.x += .3;
+
+// if we comment out the line below, the loop will execute 300 times, otherwise it will execute
+// only until our condition is met
+if (v@P.x > 30) setdetailattrib(0, "repeat", 0, "set");
+```
+
 <br>
 
 #### Printing and formatting
@@ -1177,11 +1280,8 @@ struct hipFile {
 <br>
 
 ### Todo
-* Fix snippet/inline error
-* IFs, else, conditional (ternary) operator
-* Loops and flow control, continue, break
-* Foreach, controlling from VEX, feedbacks, sop solver
-* DOPs - fetching other data (fields, geometry) directly from VEX
+* DOPs - fetching other data (fields, geometry, SOPs) directly from VEX
+* SOPs - fetching DOPs data - visualizers, fields, geometry
 
 <br>
 
