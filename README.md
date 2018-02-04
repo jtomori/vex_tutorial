@@ -38,7 +38,7 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [DOPs / Geometry Wrangle](#dops--geometry-wrangle)
 * [Conditions](#conditions)
 * [Loops](#loops)
-* [Stopping For-Each SOP from VEX](#stopping-for--each-sop-from-vex)
+* [Stopping For-Each SOP from VEX](#stopping-for-each-sop-from-vex)
 * [Printing and formatting](#printing-and-formatting)
 * [Printing attributes](#printing-attributes)
 * [Including external VEX files](#including-external-vex-files)
