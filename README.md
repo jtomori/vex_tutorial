@@ -34,10 +34,10 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [VOPs / Using Inline Code](#vops--using-inline-code)
 * [DOPs / Volumes workflow](#dops--volumes-workflow)
 * [DOPs / Gas Field Wrangle](#dops--gas-field-wrangle)
-* [DOPs / Gas Field Wrangle - accessing DOPs and SOPs data](#dops--gas-field-wrangle--accessing-dops-and-sops-data)
+* [DOPs / Gas Field Wrangle - accessing DOPs and SOPs data](#dops--gas-field-wrangle---accessing-dops-and-sops-data)
 * [DOPs / Geometry workflow](#dops--geometry-workflow)
 * [DOPs / Geometry Wrangle](#dops--geometry-wrangle)
-* [DOPs / Geometry Wrangle - accessing fields](#dops--geometry-wrangle--accessing-fields)
+* [DOPs / Geometry Wrangle - accessing fields](#dops--geometry-wrangle---accessing-fields)
 * [Conditions](#conditions)
 * [Loops](#loops)
 * [Stopping For-Each SOP from VEX](#stopping-for-each-sop-from-vex)
@@ -569,7 +569,7 @@ v@P *= 1.1;
 <br>
 
 #### DOPs / Geometry Wrangle - accessing fields
-[link to explanation](#dops--gas-field-wrangle--accessing-dops-and-sops-data)
+[link to explanation](#dops--gas-field-wrangle---accessing-dops-and-sops-data)
 ```C
 // we can also access DOP fields from Geometry Wrangle, it is explained in:
 // /obj/examples/dopnet_vex_vops_volume/gasfieldwrangle_accessing_DOPs_and_SOPs_data
