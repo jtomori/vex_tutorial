@@ -34,8 +34,10 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [VOPs / Using Inline Code](#vops--using-inline-code)
 * [DOPs / Volumes workflow](#dops--volumes-workflow)
 * [DOPs / Gas Field Wrangle](#dops--gas-field-wrangle)
+* [DOPs / Gas Field Wrangle - accessing DOPs and SOPs data](#dops--gas-field-wrangle--accessing-dops-and-sops-data)
 * [DOPs / Geometry workflow](#dops--geometry-workflow)
 * [DOPs / Geometry Wrangle](#dops--geometry-wrangle)
+* [DOPs / Geometry Wrangle - accessing fields](#dops--geometry-wrangle--accessing-fields)
 * [Conditions](#conditions)
 * [Loops](#loops)
 * [Stopping For-Each SOP from VEX](#stopping-for-each-sop-from-vex)
@@ -514,6 +516,31 @@ f@pig_in *= .9;
 ```
 <br>
 
+#### DOPs / Gas Field Wrangle - accessing DOPs and SOPs data
+
+```C
+// it is also possible to access DOP fields using this syntax
+// we can sample "pig_mask" without setting the field "Inputs"
+
+float pig_mask = 0;
+// the following lines bellow are identical, the second and third ones are more flexible as they refer to relative path,
+// it will work even if we renamed this DOP network, the first line would not work after that
+// the second argument is either an int representing primitive number, or string representing primitive name
+// the syntax for accessing DOP data is: op:/DOP_path:dop_object/field_name
+
+pig_mask = volumesample("op:/obj/examples/dopnet_vex_vops_volume:volume/pig_mask", 0, v@P);
+//pig_mask = volumesample("op:" + opfullpath("../") + ":volume/pig_mask", "pig_mask", v@P);
+//pig_mask = volumesample("op:../" + ":volume/pig_mask", 0, v@P); // op: syntax also accepts relative paths
+
+// we can also directly access SOP volumes using this syntax
+//pig_mask = volumesample("op:../../IN_VOLUMES", 1, v@P);
+
+f@pig_in *= 1-pig_mask;
+```
+![Gas Field Wrangle - DOPs and SOPs data](./img/gas_field_wrangle_dop_sop_data.jpg)
+
+<br>
+
 #### DOPs / Geometry workflow
 Here I will show basic steps of creating a simple custom DOP solver operating on volumes.
 
@@ -539,6 +566,24 @@ Also note, that *Geometry Wrangle* and *Geometry VOP* have an option to use *Mys
 // to properly set "Input 1" in "Inputs" tab of this node
 v@P *= 1.1;
 ```
+<br>
+
+#### DOPs / Geometry Wrangle - accessing fields
+[link to explanation](#dops--gas-field-wrangle--accessing-dops-and-sops-data)
+```C
+// we can also access DOP fields from Geometry Wrangle, it is explained in:
+// /obj/examples/dopnet_vex_vops_volume/gasfieldwrangle_accessing_DOPs_and_SOPs_data
+
+// all following lines will produce the same result
+float mask = 0;
+mask = volumesample("op:../" + ":box/pig_mask", 0, v@P);
+//mask = volumesample("op:" + opfullpath("../") + ":box/pig_mask", "pig_mask", v@P);
+//mask = volumesample("op:../../IN_VOLUMES", 1, v@P);
+
+// visualize what points sampled non-zero density in the volume
+if (mask != 0) v@Cd = {1,0,0};
+```
+
 <br>
 
 #### Conditions
