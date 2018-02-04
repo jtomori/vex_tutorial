@@ -1325,8 +1325,7 @@ struct hipFile {
 <br>
 
 ### Todo
-* DOPs - fetching other data (fields, geometry, SOPs) directly from VEX
-* SOPs - fetching DOPs data - visualizers, fields, geometry
+* any suggestions? :)
 
 <br>
 
