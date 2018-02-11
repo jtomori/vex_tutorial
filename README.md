@@ -53,6 +53,10 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [Functions casting](#functions-casting)
 * [Structs](#structs)
 * [Structs in Attribute Wrangle](#structs-in-attribute-wrangle)
+* [Groups](#groups)
+* [Attribute typeinfo](#attribute-typeinfo)
+* [Attributes to create](#attributes-to-create)
+* [Enforce prototypes](#enforce-prototypes)
 
 
 <br>
@@ -1324,6 +1328,117 @@ struct hipFile {
 ```
 <br>
 
+#### Groups
+```C
+// it is also possible to manipulate group membership through VEX, group names
+// are bound by default with i@group_name syntax (int: 0 - not member, 1 - member)
+// you can disable it in "Bindings" tab of Wrangle node with "Autobind Groups by Name"
+
+// it is also possible to create new groups, they are created automatically like attributes
+// in the following line we assign all points that belong to "selected" group to "red" group
+i@group_red = i@group_selected;
+
+// all points, that have positive X coordinate will belong to "green" group
+i@group_green = v@P.x > 0 ? 1 : 0;
+// except those, which are already in "red" group
+i@group_green = i@group_green && !i@group_red ? 1 : 0;
+// i@group_name can have two values and can be treated as a boolean, the following line
+// has the same effect as the previous one
+//i@group_green = i@group_green == 1 && i@group_red == 0 ? 1 : 0;
+```
+Group mirror
+```C
+// groups in VEX are very helpful as we can use VEX functions to do our own group logic
+// in this example we mirror red group along X axis and will assign it to "blue" group
+
+int pt_reflected = nearpoint(0, set(-v@P.x, v@P.y, v@P.z) );
+int pt_group_red = inpointgroup(0, "red", pt_reflected);
+
+i@group_blue = pt_group_red;
+```
+
+<br>
+
+#### Attribute typeinfo
+```C
+/*
+It is possible to assign a meaning to attributes. Houdini will understand this meaning and
+will treat attributes in a specific way based on it. For example a Transform SOP operates
+on P attribute, but will also modify N attribute accordingly. For modifying this behavior 
+we can use setattribtypeinfo() function which can set typeinfo to attributes.
+You can check which typeinfo an attribute has by middle-clicking on a node and checking value
+in brackets, e.g. P (pos) - this means point typeinfo
+
+You can chceck list of available typeinfos in the docs, or below:
+none - No transformations should be applied.
+point - Scales, rotations and translations should be applied.
+hpoint - A four-vector with scales, rotations and translations applied.
+vector - Scales and rotations should be applied.
+normal - Scales and rotations should be applied. Scales are applied with inverse-transpose.
+color - No transformations.
+matrix - A 4×4 matrix with scale, rotations, and translations applied.
+quaternion - A four-vector with rotations applied.
+indexpair - No transformations.
+integer - Integer values that do not blend when points are averaged.
+integer-blend - Integer values that blend when points are averaged.
+*/
+
+// set color to green
+v@Cd = {0,1,0};
+
+// initialize N attribute, which will get automatically get values
+v@N;
+
+// change typeinfos of Cd and N to see funky results after modifying geometry with Transform SOP
+setattribtypeinfo(0, "point", "Cd", "point");
+setattribtypeinfo(0, "point", "N", "color");
+```
+
+<br>
+
+#### Attributes to create
+```C
+// when dealing with more code you might often run into
+// errors caused by typos, when you mistype an attributes
+// name, VEX will automatically initialize a new one
+// like in the following example
+v@Cd = {1,0,1};
+
+// to avoid this kind of errors, we can specify which attributes
+// to create, in "Attributes to Create" parameter of a Wrangle
+// e.g. the following line will result in a node error, because
+// we did not specify to create a "n" attribute
+//v@n = {0,1,0};
+```
+
+<br>
+
+#### Enforce prototypes
+```C
+// we can go even further and use "Enforce Prototypes" option in Wrangles
+// it is handy with larger code projects as it helps with managing
+// attributes and simplifies syntax for accesing them (especially with arrays)
+
+// initialize attribute "Prototypes"
+vector @P;
+vector @Cd;
+int @ptnum;
+float @Frame;
+float @new_attrib = 4; // we can also set initial value, but without any expressions
+int @new_int_array_attrib[];
+
+// we can still use local variables in standard way
+float A = @Frame * .5;
+int B = 4;
+
+@P += set(0, B, 0);
+@Cd *= rand(@ptnum);
+@new_attrib *= A;
+@new_int_array_attrib = {1,2,3,4};
+```
+
+<br>
+
 ### Todo
 * any suggestions? :)
 
@@ -1333,7 +1448,8 @@ struct hipFile {
 In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
 For more practical and visual VEX examples check [Matt Estela's awesome wiki](http://www.tokeru.com/cgwiki/?title=HoudiniVex)<br>
 Another good source is *$HH/vex/include* folder which is full of VEX include files with many useful functions. *( $HH expands to /houdini_install_dir/houdini/ )*<br>
-VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/vex/lang) and [functions](http://www.sidefx.com/docs/houdini/vex/functions/index.html) pages are very helpful.
+Make sure to watch this very cool [VEX Masterclass](https://vimeo.com/173658697) by Jeff Wagner. <br>
+VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/vex/lang) and [functions](http://www.sidefx.com/docs/houdini/vex/functions/index.html) pages are very helpful too.
 
 <br>
 
