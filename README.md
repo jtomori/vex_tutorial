@@ -1415,11 +1415,13 @@ v@Cd = {1,0,1};
 
 #### Enforce prototypes
 ```C
-// we can go even further and use "Enforce Prototypes" option in Wrangles
-// it is handy with larger code projects as it helps with managing
-// attributes and simplifies syntax for accesing them (especially with arrays)
+// If we want to be more organized, we can use "Enforce Prototypes" option 
+// in Wrangles, it is handy with larger code projects as it helps with 
+// managing attributes and simplifies syntax for accesing them (especially with arrays)
 
-// initialize attribute "Prototypes"
+// initialize attribute "Prototypes" - here we need to specify all attributes
+// that we want to use/create, it also applies to default/global attributes 
+// like v@P, @Frame, @ptnum
 vector @P;
 vector @Cd;
 int @ptnum;
@@ -1427,10 +1429,11 @@ float @Frame;
 float @new_attrib = 4; // we can also set initial value, but without any expressions
 int @new_int_array_attrib[];
 
-// we can still use local variables in standard way
+// we can still use local variables in a standard way
 float A = @Frame * .5;
 int B = 4;
 
+// now we can use attributes without their signature before @ sign
 @P += set(0, B, 0);
 @Cd *= rand(@ptnum);
 @new_attrib *= A;
