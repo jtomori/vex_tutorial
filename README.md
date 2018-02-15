@@ -24,6 +24,7 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [Reading arrays](#reading-arrays)
 * [Arrays](#arrays)
 * [Arrays and strings example](#arrays-and-strings-example)
+* [Reading and writing Matrices](#reading-and-writing-matrices)
 * [Checking for attributes](#checking-for-attributes)
 * [Automatic attribute creation](#automatic-attribute-creation)
 * [Getting transformation from OBJs](#getting-transformation-from-objs)
@@ -245,6 +246,26 @@ push(pathSplit, fileName); // append file name into the array of strings
 path = "/" + join(pathSplit, "/"); // convert array of strings into one string, starting with "/" for root, because it is not added before the first element, only to in-betweens
 
 s@path = path; // output into the attribute
+```
+<br>
+
+#### Reading and writing Matrices
+```C
+// To intilize a vector or a matrix with a variable/attribute we have to use the set method
+float  f = 0.0f;
+vector v = set(f,f,f);
+matrix m = set(f,f,f,f,f,f,f,f,f);
+       m = set(v,v,v);
+
+// We can then read the value back by
+float f = getcomp(m,0,0);
+// However we can not read back a vector directly instead we have to use:
+f = set(getcomp(m,0,0));
+v = set(getcomp(m,0,0),
+               getcomp(m,0,1),
+               getcomp(m,0,2));
+// Likewise the setcomp can be used
+setcomp(m,f,0,0);
 ```
 <br>
 
