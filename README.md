@@ -262,8 +262,8 @@ float f = getcomp(m,0,0);
 // However we can not read back a vector directly instead we have to use:
 f = set(getcomp(m,0,0));
 v = set(getcomp(m,0,0),
-               getcomp(m,0,1),
-               getcomp(m,0,2));
+        getcomp(m,0,1),
+        getcomp(m,0,2));
 // Likewise the setcomp can be used
 setcomp(m,f,0,0);
 ```
