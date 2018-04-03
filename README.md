@@ -250,10 +250,10 @@ s@path = path; // output into the attribute
 #### Reading and writing Matrices
 ```C
 // To intilize a vector or a matrix with a variable/attribute we have to use the set method
-float  f = 0.0f;
-vector v = set(f,f,f);
-matrix m = set(f,f,f,f,f,f,f,f,f);
-       m = set(v,v,v);
+float   f = 0;
+vector  v = set(f,f,f);
+matrix3 m = set(f,f,f,f,f,f,f,f,f);
+        m = set(v,v,v);
 
 // We can then read the value back by
 float f = getcomp(m,0,0);
