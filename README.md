@@ -74,7 +74,7 @@ using this syntax
 // by calling ch*() function, with * representing a signature, check the docs
 // for the full list, some of them: chv() - vector, chu() - vector2, chs() - string
 // chramp() - ramp, chp() - vector4, chi() - int, chf() - float, ch4() - matrix, ch3() - matrix3 ...
-// you can also use optioinal parameter for time which will enable you to evaluate
+// you can also use optioinal argument for time which will enable you to evaluate
 // the channel at different frame
 //
 // once you type ch*() in your code, you can press a button on the right, to
@@ -83,7 +83,7 @@ float y = chf("y_position");
 vector col = chv("color");
 matrix3 xform = ch3("xform");
 
-// you can also reference parameters in external nodes
+// you can also reference parameters from external nodes
 // if there is an expression (Python/hscript) in the parameter,
 // it will be evaluated
 float up = chf("../params_1/move_up");
@@ -107,24 +107,24 @@ float blendPig = chf("blend_pig");
 vector P1, P2, P3, P_new;
 
 // this is one way of reading attributes, this is only valid, when
-// point count is exactly the same in both inputs, attribute from second
-// input with the same @ptnum is retrieved
-// v@P can also be replaced with @P, since it can be guessed as it is commonly
-// used attribute, I prefer explicit declaration :)
+// point count is exactly the same in both inputs, then attribute from
+// point from second input with the same @ptnum is retrieved
+// v@P can also be replaced with @P, since its signature can be guessed as it is
+// commonly used attribute, however I prefer explicit declaration :)
 // v@ - vector, i@ - integer, f@ - float, 3@ - matrix3, p@ - vector4
 // 4@ - matrix4, 2@ - matrix2, u@ - vector2, s@ - string,
 //P1 = v@P;
 //P2 = v@opinput1_P; // inputs numbering starts at 0, therefore 1 refers to the second input
 
-// this approach is useful for querying attributes from different point (other from the currently processed one)
-// node inputs start as well from 0 (first input), 1 (second input) ...
+// this approach is useful for querying attributes from different points (other from the currently processed one)
+// node input numbering starts from 0 (first input), 1 (second input) ...
 P1 = point(0, "P", @ptnum);
 P2 = point(1, "P", @ptnum);
 
 // note that you can also read attributes from node, which is not connected
-// to the current node, use the "op:" syntax
+// to the current node using the "op:" syntax
 // this is valid for any function which is expecting geo handle (sampling from other volumes...)
-// Houdini network UI will not detect this dependency when Show -> Dependency links display is enabled
+// note that Houdini network UI will not detect this dependency when Show -> Dependency links display is enabled
 P3 = point("op:../pig_shape", "P", @ptnum);
 
 
@@ -141,7 +141,7 @@ v@P = P_new;
 // create a new attribute simply by typing *@attrib_name with
 // * representing its signature
 // v@ - vector, i@ - integer, f@ - float, 3@ - matrix3, p@ - vector4
-// 4@ - matrix4, 2@ - matrix2, u@ - vector2, s@ - string,
+// 4@ - matrix4, 2@ - matrix2, u@ - vector2, s@ - string
 
 v@myVector = {1,2,3};
 // vectors with functions/variables in them need to be created with set()
@@ -149,7 +149,7 @@ u@myVectorFunc = set(@Frame, v@P.y);
 u@myVector2 = {4,5};
 f@myFloat = 400.0;
 i@myInteger = 727;
-3@myMatrix3x3 = matrix3( ident() ); // function casting, will be explained in other node
+3@myMatrix3x3 = matrix3( ident() ); // this line contains function casting, which is explained in functions_casting section
 4@myMatrix4x4 = matrix( ident() );
 s@myString = "abc";
 
@@ -167,7 +167,7 @@ u[]@myVector2Array = { {4,5}, {6,7} };
 f[]@myFloatArray = { 4.0, 2.7, 1.3};
 i[]@myIntegerArray = {132, 456, 789};
 // arrays containing functions/variables need to be initialized with array() function
-3[]@myMatrix3x3Array = array( matrix3( ident() ), matrix3( ident() ) * 5 ); // refer to functions_casting node for the meaning of matrix3()
+3[]@myMatrix3x3Array = array( matrix3( ident() ), matrix3( ident() ) * 5 );
 4[]@myMatrix4x4Array = array( matrix( ident() ), matrix( ident() ) * 9 );
 s[]@myStringArray = { "abc", "def", "efg" };
 ```
@@ -175,17 +175,15 @@ s[]@myStringArray = { "abc", "def", "efg" };
 
 #### Reading arrays
 ```C
-// this is how you can create local array variables and load array attributes
-vector myVectorArray [] = v[]@myVectorArray;
-// ...
-// you get the idea
+// this is how you can create local array variables and load array attributes into them
+vector myVectorArray[] = v[]@myVectorArray;
 
 matrix3 a = ident() * 5;
 
 v@P.x *= a.yy; // you can access matrix components using this syntax
-// x -> 1, y -> 2, z -> 3, w -> 4
-v@P.y = 4[]@myMatrix4x4Array[1].ww;
-v@P.z = u[]@myVector2Array[1][0]; // this is how you can access array of vectors
+// x -> 1st element, y -> 2nd, z -> 3rd, w -> 4th
+v@P.y = 4[]@myMatrix4x4Array[1].ww; // second array matrix, last element
+v@P.z = u[]@myVector2Array[1][0]; // this is how you can access array of vectors - second array, first element
 ```
 <br>
 
@@ -194,7 +192,7 @@ v@P.z = u[]@myVector2Array[1][0]; // this is how you can access array of vectors
 int numbers[] = array(1,2,3,4);
 
 // arrays can be handled in Pythonic way
-numbers = numbers[::-1];
+numbers = numbers[::-1]; // array reverse
 
 // rading from arrays
 i@firstItem = numbers[0];
@@ -250,7 +248,7 @@ s@path = path; // output into the attribute
 
 #### Checking for attributes
 ```C
-// it is possible to determine if incoming geometry has an attribute
+// it is also possible to determine if incoming geometry has an attribute
 
 i@hasCd = hasattrib(0, "point", "Cd");
 i@hasN = hasattrib(0, "point", "N");
@@ -280,7 +278,7 @@ f@boo = v@Cd.y;
 #### Getting transformation from OBJs
 ```C
 // VEX is well integrated into Houdini, it can for example fetch
-// world space transformation matrix from an OBJ node, let it be a null
+// world space transformation matrix from an OBJ node, let it be a null OBJ
 // or part from a rig, camera or whatever object there which has a transformation
 // optransform() will contain also all parent transformations
 
@@ -380,7 +378,7 @@ if (@ptnum == 4) {
     scale(xform, 20);
 }
 
-// setting transform intrinsic inside IFs did not work correctly, so I do it at the end
+// all of the primitives have "transform" intrinsic, so I update it at the end
 setprimintrinsic(0, "transform", @ptnum, xform, "set");
 ```
 <br>
@@ -414,10 +412,10 @@ if (@ptnum == 1) {
 
 #### Volumes
 ```C
-// float volumes can be accessed with volumesample(), vecotor volumes need
+// float volumes can be accessed with volumesample(), vector volumes need
 // volumesamplev() function, those functions expect sampling position, which
 // does not need to match voxel's center, then the value will be tri-linearly
-// interpolated from neighbouring voxelsd
+// interpolated from neighbouring voxels
 float den1 = volumesample(0, "density", v@P);
 
 // sampling position can be offset and lots of cool tricks and magic can be
@@ -425,7 +423,7 @@ float den1 = volumesample(0, "density", v@P);
 vector offset = set( 2, sin(@Frame * .1)*2 , 0 );
 float den2 = volumesample(1, "density", v@P + offset);
 
-// writing to volumes has the same syntax as to attributes
+// writing to volumes has the same syntax as writing to attributes
 f@density = lerp(den1, den2, chf("blend") );
 
 // volumes can be accessed with the same syntax as geometry attributes
@@ -527,10 +525,10 @@ f@pig_in *= .9;
 // we can sample "pig_mask" without setting the field "Inputs"
 
 float pig_mask = 0;
-// the following lines bellow are identical, the second and third ones are more flexible as they refer to relative path,
+// the following lines bellow are identical, the second and third ones are more flexible as they use relative path:
 // it will work even if we renamed this DOP network, the first line would not work after that
 // the second argument is either an int representing primitive number, or string representing primitive name
-// the syntax for accessing DOP data is: op:/DOP_path:dop_object/field_name
+// the syntax for accessing DOP data is: op:/DOP_node_path:dop_object_name/field_name
 
 pig_mask = volumesample("op:/obj/examples/dopnet_vex_vops_volume:volume/pig_mask", 0, v@P);
 //pig_mask = volumesample("op:" + opfullpath("../") + ":volume/pig_mask", "pig_mask", v@P);
@@ -566,7 +564,7 @@ Also note, that *Geometry Wrangle* and *Geometry VOP* have an option to use *Mys
 ```C
 // we can access attributes from "Geometry" data in our "box"
 // object with this syntax
-// however if we want to acces other points attributes, we need
+// however if we want to access other point's attributes, we need
 // to properly set "Input 1" in "Inputs" tab of this node
 v@P *= 1.1;
 ```
@@ -592,11 +590,11 @@ if (mask != 0) v@Cd = {1,0,0};
 
 #### Conditions
 ```C
-// it there is only one operation after if condition, this operation
+// it there is only one statement after if condition, it
 // can be written in the same line
 if (v@P.y < 0) v@Cd = {1,0,0};
 // or in any other line, since VEX is not indented language,
-// but this works only for one operation, else-if block will end with the first ; symbol
+// but this works only for one operation, else-if block will end with the first semycolon
 else if (v@P.x < 0) 
                     v@Cd = {0,1,0};
 // to execute more operations, we need to use a block of code in {} brackets
@@ -619,7 +617,7 @@ if (v@Cd == {0,0,1} || v@Cd == {1,0,0}) v@P += v@N * .4;
 #### Loops
 *Check Houdini project to get the best idea of how it works.*
 ```C
-// VEX uses common syntax for for-loops
+// VEX uses C-like syntax for for-loops
 int valA = 2;
 for (int i=0; i<11; i++) {
     valA *= 2;
@@ -638,7 +636,7 @@ P_avg /= len(nbs);
 
 v@P = P_avg;
 
-// we can also stop the loop by using "break" keyword
+// we can also stop the loop at any point by using "break" keyword
 int valB = 5;
 for (int i=0; i<13; i++) {
     valB *= 5;
@@ -647,7 +645,7 @@ for (int i=0; i<13; i++) {
 
 i@valB = valB;
 
-// we can also use "continue" keyword to jump to another loop cycle
+// we can also use "continue" keyword to jump to the next loop iteration
 // in this example we average point position with positions of neighbours
 // which are above it in world space (their Y coordinate is larger)
 int pts[] = neighbours(0, @ptnum);
@@ -696,7 +694,7 @@ if (v@P.x > 30) setdetailattrib(0, "repeat", 0, "set");
 // Linux - run Houdini from command line with 
 // the -foreground flag to see the output
 
-// manipulating with strings is useful, on only for doing console outputs,
+// manipulating with strings is useful, not only for doing console outputs,
 // but also for generating and stylizing strings, use sprintf() to return a string
 // type instead of printing to console
 
@@ -785,16 +783,16 @@ printf("\n\n");
 
 // to refresh updated header files, 
 // promote the "Force Compile" button 
-// from the attribvop1 inside of this node, 
+// from the attribvop1 node inside of this node, 
 // or do a change (add a space somewhere) 
-// in code and press Ctrl+Enter
+// in the code and press Ctrl+Enter
 
 myRemPoints(@ptnum);
 ```
 *From myLib.h:*
 ```C
 // void functions do not return anything
-// "function" word is not required
+// "function" keyword is not required
 function void myRemPoints(int ptnum) {
 	if (ptnum > 30)
     	removepoint(0, ptnum);
@@ -806,7 +804,7 @@ function void myRemPoints(int ptnum) {
 ```C
 #include "math.h"
 
-// This include file contains useful math constants
+// This include file contains useful math constant macros
 // and is available to every Houdini setup :)
 // You can use couple of constants like
 // e, pi, sqrt(2)...
@@ -888,7 +886,7 @@ i@add_ten = ADDTEN(10);
 ```
 *From myLib.h:*
 ```C
-// you can define constants and use them in your code
+// you can use macros to define constants and use them in your code
 #define MY_INT			123
 #define MY_FLOAT		3.1415926
 
@@ -896,7 +894,7 @@ i@add_ten = ADDTEN(10);
 #define RENAMEDPOWER	pow
 
 // or use macros for defining new functions
-#define ADDTEN(val)	 	val+10
+#define ADDTEN(val)	 	(val+10)
 ```
 <br>
 
@@ -907,7 +905,7 @@ i@add_ten = ADDTEN(10);
 // void does not return anything
 myRemPoints(@ptnum);
 
-// arguments are passed as references - fucntion can modify their original value
+// arguments are passed by reference - function can modify their original value
 scaleByTen(v@P);
 
 // you can prevent voids from modifying variable references
@@ -920,8 +918,8 @@ i@a = a;
 i@b = b;
 i@c = c;
 
-// functions can also output different types - float, string, int, custom struct...
-// they can also output an array of any of those types
+// functions can also return different types - float, string, int, custom struct...
+// they can also return an array of any of those types
 vector4 seeds = {1.23,4,56.489,0.849};
 f@superRandom = superRandom(seeds);
 
@@ -939,7 +937,7 @@ function void myRemPoints(int ptnum) {
 }
 
 // function parameters are passed by reference automatically, without additional syntax
-// (function can modify value of original variable, not its copy)
+// (function receive the original variable, not its copy)
 void scaleByTen(vector P) {
 	P *= 10;
 }
@@ -949,7 +947,7 @@ void changeA(int a; const int b; int c) {
 	a += 10;
 	//b += 10; // uncommenting this line will result in error
 	c = a;
-	c += 4; // even though arguments are passed as references, they are not true references, c is still independent from a
+	c += 4; // even though arguments are passed by reference, they are not true references, "c" is still independent from "a"
 }
 
 // a function returning float value
@@ -987,7 +985,7 @@ v@N = randomizeN(v@N, rand, seed); // randomizeN(vector, float, vector4)
 // we can also overload functions to return different type
 float randVal;
 randVal = float( randomizeN(v@N, rand, @ptnum) );
-//randVal = randomizeN(v@N, rand, @ptnum); // this has the same result now, but sometimes VEX might choose other function declaration
+//randVal = randomizeN(v@N, rand, @ptnum); // this has the same result now, but sometimes VEX might choose another function
 v@Cd = randVal;
 //v@Cd = set(randVal, randVal, randVal); // this is equivalent to the previous line
 
@@ -1013,7 +1011,7 @@ vector randomizeN(vector N; float amount, seed) {
 	return N;
 }
 
-// function has different set of arguments, but the same name
+// function has different set of parameters, but the same name
 vector randomizeN(vector N; float amount; vector4 seed) {
 	vector randDir;
 	
@@ -1031,7 +1029,7 @@ vector randomizeN(vector N; float amount; vector4 seed) {
 }
 
 // this function declaration returns different type
-// the function name does not really match its functionality, its just for the example
+// the function name does not really match its functionality, it is just for the example
 float randomizeN(vector N; float amount; int seed) {
 	float randDir;
 	
@@ -1054,6 +1052,7 @@ float color;
 
 // by casting to float, we can do float division, which is more helpful in our case
 color = float(myPt) / (float)maxPts; // for variables both syntaxes are valid
+//color = float(myPt) / maxPts; // it is also valid as the other variable (does not matter which one) will be upcasted to float
 
 // dividing integer by integer produces integer, it is not what we need
 //color = myPt / maxPts;
@@ -1069,7 +1068,7 @@ v@Cd = color;
 ```C
 vector col = {.1, .3, .7};
 
-col = col.zzy; // this syntax is equivalent to following line
+col = col.zzy; // this syntax is equivalent to the following line
 //col = set( col.z, col.z, col.y );
 
 // reversing order of vector elements had never been easier :)
@@ -1111,11 +1110,11 @@ v@Cd = dot(v@N, normalize( vector( rand(@ptnum) ) ) ) * 0.5 + 0.5;
 // in this node I will show some examples of using structs, they will be defined in myLib.h
 // for defining structs inside a wrangle, see node below
 
-// declare struct variable, member data will have default values
+// declare struct variable, member variables will have default values
 myCustomMatrix A;
 myCustomMatrix B;
 
-// change values of data in A
+// change values of member variables in A
 A.uniformScale = 2.5;
 A.comment = "a very useful struct";
 pop(A.myArray);
@@ -1146,7 +1145,7 @@ s@baseB = myProjectB.base; // project_B
 s@extB = myProjectB.ext; // hip
 i@verB = myProjectB.version; // 1
 
-// you can call methods in structs with -> operator
+// you can call methods (member functions) in structs with -> operator
 int versionA = myProjectA->incVersion();
 versionA = myProjectA->incVersion();
 versionA = myProjectA->incVersion();
@@ -1177,7 +1176,7 @@ string files1 = "image1.jpg,image2.png,text.pdf,awesome_tutorial_jtomori_003.hip
 hipFile first = findFirstHipFile(files1);
 s@first = first->getFullName();
 
-// in VEX we can also output error with custom message, uncomment line bellow and check
+// in VEX we can also output error with custom message, uncomment the line bellow and check
 // node's error message
 string files2 = "image1.jpg,image2.png";
 //hipFile second = findFirstHipFile(files2); // No houdini project found in this file list: "image1.jpg,image2.png".
@@ -1221,7 +1220,7 @@ struct hipFile {
 		return this.version;
 	}
 
-	// inside a struct function, you can refer to struct fields by name as if they 
+	// inside of a struct function, you can refer to struct fields by name as if they 
 	// were variables (for example, base is a shortcut for this.base).
 	// this method writes to console window / terminal
 	void printName() {
@@ -1331,7 +1330,7 @@ struct hipFile {
 #### Groups
 ```C
 // it is also possible to manipulate group membership through VEX, group names
-// are bound by default with i@group_name syntax (int: 0 - not member, 1 - member)
+// are bound by default with i@group_name syntax (int value: 0 - not member, 1 - member)
 // you can disable it in "Bindings" tab of Wrangle node with "Autobind Groups by Name"
 
 // it is also possible to create new groups, they are created automatically like attributes
@@ -1399,7 +1398,7 @@ setattribtypeinfo(0, "point", "N", "color");
 #### Attributes to create
 ```C
 // when dealing with more code you might often run into
-// errors caused by typos, when you mistype an attributes
+// errors caused by typos, when you mistype an attribute
 // name, VEX will automatically initialize a new one
 // like in the following example
 v@Cd = {1,0,1};
@@ -1415,7 +1414,7 @@ v@Cd = {1,0,1};
 
 #### Enforce prototypes
 ```C
-// If we want to be more organized, we can use "Enforce Prototypes" option 
+// If we want to be even more organized, we can use "Enforce Prototypes" option 
 // in Wrangles, it is handy with larger code projects as it helps with 
 // managing attributes and simplifies syntax for accesing them (especially with arrays)
 

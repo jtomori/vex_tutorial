@@ -1,10 +1,10 @@
-// those two lines and #endif at the bottom will prevent multiple including of this header
+// include guards: those two lines and #endif at the end of this file will prevent multiple including of this header
 #ifndef _myLib_
 #define _myLib_
 
 
 
-// you can define constants and use them in your code
+// you can use macros to define constants and use them in your code
 #define MY_INT			123
 #define MY_FLOAT		3.1415926
 
@@ -12,19 +12,19 @@
 #define RENAMEDPOWER	pow
 
 // or use macros for defining new functions
-#define ADDTEN(val)	 	val+10
+#define ADDTEN(val)	 	(val+10)
 
 
 
 // void functions do not return anything
-// "function" word is not required
+// "function" keyword is not required
 function void myRemPoints(int ptnum) {
 	if (ptnum > 30)
     	removepoint(0, ptnum);
 }
 
 // function parameters are passed by reference automatically, without additional syntax
-// (function can modify value of original variable, not its copy)
+// (function receive the original variable, not its copy)
 void scaleByTen(vector P) {
 	P *= 10;
 }
@@ -34,7 +34,7 @@ void changeA(int a; const int b; int c) {
 	a += 10;
 	//b += 10; // uncommenting this line will result in error
 	c = a;
-	c += 4; // even though arguments are passed as references, they are not true references, c is still independent from a
+	c += 4; // even though arguments are passed by reference, they are not true references, "c" is still independent from "a"
 }
 
 // testing escaping of special characters
@@ -76,7 +76,7 @@ vector randomizeN(vector N; float amount, seed) {
 	return N;
 }
 
-// function has different set of arguments, but the same name
+// function has different set of parameters, but the same name
 vector randomizeN(vector N; float amount; vector4 seed) {
 	vector randDir;
 	
@@ -94,7 +94,7 @@ vector randomizeN(vector N; float amount; vector4 seed) {
 }
 
 // this function declaration returns different type
-// the function name does not really match its functionality, its just for the example
+// the function name does not really match its functionality, it is just for the example
 float randomizeN(vector N; float amount; int seed) {
 	float randDir;
 	
@@ -129,7 +129,7 @@ struct hipFile {
 		return this.version;
 	}
 
-	// inside a struct function, you can refer to struct fields by name as if they 
+	// inside of a struct function, you can refer to struct fields by name as if they 
 	// were variables (for example, base is a shortcut for this.base).
 	// this method writes to console window / terminal
 	void printName() {
@@ -202,4 +202,4 @@ hipFile[] findAllHipFiles(string text) {
 }
 
 
-#endif
+#endif // end of include guards
