@@ -594,7 +594,7 @@ if (mask != 0) v@Cd = {1,0,0};
 // can be written in the same line
 if (v@P.y < 0) v@Cd = {1,0,0};
 // or in any other line, since VEX is not indented language,
-// but this works only for one operation, else-if block will end with the first semycolon
+// but this works only for one operation, else-if block will end with the first semicolon
 else if (v@P.x < 0) 
                     v@Cd = {0,1,0};
 // to execute more operations, we need to use a block of code in {} brackets
