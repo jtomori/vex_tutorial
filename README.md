@@ -1478,3 +1478,8 @@ VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/
 
 ### Feedback & Suggestions
 Please let me know if you find any mistakes or have ideas for improvements. I will fix it and push it to this repo :)
+
+<br>
+
+### Contributing
+Feel free to contribute to this project by creating pull requests or by [buying me a beer :)](https://www.paypal.me/jtomori)
