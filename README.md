@@ -58,6 +58,7 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [Attribute typeinfo](#attribute-typeinfo)
 * [Attributes to create](#attributes-to-create)
 * [Enforce prototypes](#enforce-prototypes)
+* [Attribute default values](#attribute-default-values)
 
 
 <br>
@@ -1458,6 +1459,40 @@ int B = 4;
 @Cd *= rand(@ptnum);
 @new_attrib *= A;
 @new_int_array_attrib = {1,2,3,4};
+```
+
+<br>
+
+#### Attribute default values
+```C
+// It is also possible to set default values for attributes from VEX.
+// It replicates behavior of "Default" parameter in Attribute Create SOP,
+// it means that when we create a new geometry (without passing current ptnum
+// to addpoint() function to copy all attributes), it will have those default
+// values. Otherwise it will be usually set to 0, or 1 in case of Cd.
+// The same applies for merging in a geometry, which does not have the attribute,
+// the attribute will be added with default values which we specified.
+// Note that defaults do not work with string attributes, it is a known limitation.
+
+// Default values can be set with Attribute Prototypes which were mentioned in
+// the previous node. Any new geometry will have those default values.
+vector @Cd = {1,0,0};
+int @id = 4; //@Frame or other expressions will not work
+
+string @default = "abc"; // defaults for strings are not supported yet
+
+// Let's create couple of copies of our points
+vector offset = {0,8,0};
+for (int i = 0; i < 3; i++)
+    addpoint(0, v@P + offset * (i + 1));
+
+// Original sphere will have this value set to 7, while new points will have
+// default value 0
+f@pscale = 7.0;
+
+// This will set id attribute to zero only on input geometry, new geometry will 
+// have default value 4
+i@id = 0;
 ```
 
 <br>
