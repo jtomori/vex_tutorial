@@ -1514,6 +1514,8 @@ VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/
 ### Feedback & Suggestions
 Please let me know if you find any mistakes or have ideas for improvements. I will fix it and push it to this repo :)
 
+Suggestion: I feel PRs are a super long winded way to give improvements and or suggestions. You may want to provide contact details or open the issues!
+
 <br>
 
 ### Contributing
