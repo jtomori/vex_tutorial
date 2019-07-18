@@ -1517,4 +1517,4 @@ Please let me know if you find any mistakes or have ideas for improvements. I wi
 <br>
 
 ### Contributing
-Feel free to contribute to this project by creating pull requests or by [buying me a beer :)](https://www.paypal.me/jtomori)
+Feel free to contribute to this project by creating pull requests or by [buying me a beer :)](https://www.paypal.me/jurajtomori)
