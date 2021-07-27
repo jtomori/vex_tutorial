@@ -1,3 +1,5 @@
+<meta charset="utf-8" lang="en">
+
 # VEX tutorial
 ## A collection of code snippets and examples showing syntax and capabilities of VEX language inside SideFX Houdini
 <p align="right"><small><sup>by Juraj Tomori</sup></small></p>
@@ -1508,3 +1510,5 @@ VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/
 
 ### Feedback & Suggestions
 Please let [me](https://jtomori.github.io) know if you find any mistakes or have ideas for improvements.
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
