@@ -487,7 +487,7 @@ Here I will show basic steps of creating a simple custom DOP solver operating on
 3. DOPs can contain lots of fields and therefore they are not visible by default. To display them in viewport, we can use *Scalar Field Visualization* node.
 ![Scalar Field Visualization](./img/scalar_field_vis.jpg)
 
-4. If we want to sample different volume, or sample a volume at different location, we need to set up *Inputs* properly. This is needed for [*Gas Field Wrangle*](#dops--gas-field-wrangle) and *Gas Field VOP*.
+4. If we want to sample different volume, or sample a volume at different location, we need to set up *Inputs* properly. This is needed for *Gas Field Wrangle* and *Gas Field VOP*.
 ![Gas Field Wrangle Inputs](./img/gas_field_wrangle_inputs.jpg)
 ![Gas Field VOP Inputs](./img/gas_field_vop_inputs.jpg)
 
