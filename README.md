@@ -1,24 +1,19 @@
-**VEX tutorial**
+# VEX tutorial
 
 *A collection of code snippets and examples showing syntax and capabilities of VEX language inside SideFX Houdini*
 <p align="right"><small><sup>by Juraj Tomori</sup></small></p>
 
-<br>
-
-### Intro
+# Intro
 Recently I made a small lecture for other students at Filmakademie. They requested an introduction lecture to using VEX. I did not focus on practical examples and fancy operations, but on syntax, capabalities and usage. During the lecture I got some ideas on extending the content. So I looked more into the topics and collected them along with explanations inside one hip file. This tutorial belongs to series of my posts at my [blog](https://jurajtomori.wordpress.com/). However because of the formatting and other limitations of Wordpress I decided to place it here. It will also be easier to keep track of changes.
 
-<br>
+# How to use it
+You can clone, or [directly download](https://github.com/jtomori/vex_tutorial/archive/master.zip) this repository.
 
-### How to use it
-You can clone, or [directly download](https://github.com/jtomori/vex_tutorial/archive/master.zip) this repository.<br>
-It contains **examples.hipnc** and [**vex/include/myLib.h**](./vex/include/myLib.h) files which are full of various examples with explanations in comments.<br>
+It contains **examples.hipnc** and [**vex/include/myLib.h**](./vex/include/myLib.h) files which are full of various examples with explanations in comments.
+
 It is the best to check all the nodes with open *Geometry Spreadsheet* and *Console Output* windows to see values of attributes and output text. Alternatively you can use this page for quick looking at the topics covered and most of the code that I include here as well. I am not including here all of the code since sometimes it might not make a lot of sense outside of Houdini. Where necessary I include related functions from *myLib.h* or attach screenshots.
 
-
-<br>
-
-### Topics
+# Topics
 * [Reading parameter values](#reading-parameter-values)
 * [Reading attributes](#reading-attributes)
 * [Exporting attributes](#exporting-attributes)
@@ -61,12 +56,9 @@ It is the best to check all the nodes with open *Geometry Spreadsheet* and *Cons
 * [Enforce prototypes](#enforce-prototypes)
 * [Attribute default values](#attribute-default-values)
 
+# Tutorial
 
-<br>
-
-### Tutorial
-
-#### Reading parameter values
+## Reading parameter values
 ```C
 /*
 multi-line comments can be typed
@@ -101,9 +93,8 @@ v@P.y += up;
 v@myVec = 1.456;
 v@myVec += v@N.y;
 ```
-<br>
 
-#### Reading attributes
+## Reading attributes
 ```C
 float blend = chf("blend");
 float blendPig = chf("blend_pig");
@@ -137,9 +128,8 @@ P_new = lerp(P_new, P3, blendPig);
 
 v@P = P_new;
 ```
-<br>
 
-#### Exporting attributes
+## Exporting attributes
 ```C
 // create a new attribute simply by typing *@attrib_name with
 // * representing its signature
@@ -174,9 +164,8 @@ i[]@myIntegerArray = {132, 456, 789};
 4[]@myMatrix4x4Array = array( matrix( ident() ), matrix( ident() ) * 9 );
 s[]@myStringArray = { "abc", "def", "efg" };
 ```
-<br>
 
-#### Reading arrays
+## Reading arrays
 ```C
 // this is how you can create local array variables and load array attributes into them
 vector myVectorArray[] = v[]@myVectorArray;
@@ -188,9 +177,8 @@ v@P.x *= a.yy; // you can access matrix components using this syntax
 v@P.y = 4[]@myMatrix4x4Array[1].ww; // second array matrix, last element
 v@P.z = u[]@myVector2Array[1][0]; // this is how you can access array of vectors - second array, first element
 ```
-<br>
 
-#### Arrays
+## Arrays
 ```C
 int numbers[] = array(1,2,3,4);
 
@@ -221,9 +209,8 @@ vector vectors[] = { {1,2,3}, {4,5,6}, {7,8,9} };
 f[]@serializedVectors = serialize(vectors);
 v[]@unserializedFloats = unserialize(f[]@serializedVectors);
 ```
-<br>
 
-#### Arrays and strings example
+## Arrays and strings example
 ```C
 // simple example of manipulating strings and arrays
 // it will convert /path/to/the/project/file/project_v3.hipnc
@@ -247,9 +234,8 @@ path = "/" + join(pathSplit, "/"); // convert array of strings into one string, 
 
 s@path = path; // output into the attribute
 ```
-<br>
 
-#### Reading and writing Matrices
+## Reading and writing Matrices
 ```C
 // To intilize a vector or a matrix with a variable/attribute we have to use the set method
 float   f = 0;
@@ -267,9 +253,8 @@ v = set(getcomp(m,0,0),
 // Likewise the setcomp can be used
 setcomp(m,f,0,0);
 ```
-<br>
 
-#### Checking for attributes
+## Checking for attributes
 ```C
 // it is also possible to determine if incoming geometry has an attribute
 
@@ -278,9 +263,8 @@ i@hasN = hasattrib(0, "point", "N");
 i@hasOrient = hasattrib(0, "point", "orient");
 i@hasPscale = hasattrib(0, "point", "pscale");
 ```
-<br>
 
-#### Automatic attribute creation
+## Automatic attribute creation
 ```C
 // if you use @attribute and it does not exist, 
 // then it will be automatically created
@@ -296,9 +280,8 @@ f@boo = v@Cd.y;
 // to be created, if you then have a typo and use v@CD instead
 // of v@Cd, node will report an error
 ```
-<br>
 
-#### Getting transformation from OBJs
+## Getting transformation from OBJs
 ```C
 // VEX is well integrated into Houdini, it can for example fetch
 // world space transformation matrix from an OBJ node, let it be a null OBJ
@@ -310,9 +293,8 @@ matrix xform = optransform(nodePath);
 
 v@P *= invert(xform);
 ```
-<br>
 
-#### Intrinsics
+## Intrinsics
 ```C
 // a lot of information and functionality is stored in
 // "intrinsic" attributes, they might be hidden to many users
@@ -404,9 +386,8 @@ if (@ptnum == 4) {
 // all of the primitives have "transform" intrinsic, so I update it at the end
 setprimintrinsic(0, "transform", @ptnum, xform, "set");
 ```
-<br>
 
-#### VDB intrinsics
+## VDB intrinsics
 ```C
 // for some reason updating VDB's transform and other primitives transform
 // did not work properly from one wrangle, so I put it here
@@ -431,9 +412,8 @@ if (@ptnum == 1) {
     setprimintrinsic(0, "vdb_is_saved_as_half_float", @ptnum, 1, "set");
 }
 ```
-<br>
 
-#### Volumes
+## Volumes
 ```C
 // float volumes can be accessed with volumesample(), vector volumes need
 // volumesamplev() function, those functions expect sampling position, which
@@ -452,9 +432,8 @@ f@density = lerp(den1, den2, chf("blend") );
 // volumes can be accessed with the same syntax as geometry attributes
 f@density = f@density * chf("scale");
 ```
-<br>
 
-#### VOPs / Using Snippets
+## VOPs / Using Snippets
 *Check Houdini project to get the best idea of how it works.*
 ```C
 // in snippets we do not need to use any sign for variables, only
@@ -478,9 +457,8 @@ noise = clamp(noise, 0, 1);
 
 color = lerp(frontColor, noise, 1-mix);
 ```
-<br>
 
-#### VOPs / Using Inline Code
+## VOPs / Using Inline Code
 *Check Houdini project to get the best idea of how it works.*
 ```C
 // here we can create additional output variables
@@ -499,9 +477,8 @@ noise_in = clamp(noise_in, 0, 1);
 
 $color = lerp($frontColor, noise_in, 1-mix);
 ```
-<br>
 
-#### DOPs / Volumes workflow
+## DOPs / Volumes workflow
 Here I will show basic steps of creating a simple custom DOP solver operating on volumes.
 
 1. At first we need to create a *DOP Object*, which is a container that will contain all our fields (volumes in DOPs), geometry and any other data. Object name is important, because later we will use it to access our data.
@@ -515,9 +492,8 @@ Here I will show basic steps of creating a simple custom DOP solver operating on
 ![Gas Field VOP Inputs](./img/gas_field_vop_inputs.jpg)
 5. We can also use arbitrary SOP operators to process our DOP fields. We can do so by using *SOP Solver*. We just need to set *Data Name* to our field which we want to process.
 ![Sop Solver volume](./img/sop_solver_volume.jpg)
-<br>
 
-#### DOPs / Gas Field Wrangle
+## DOPs / Gas Field Wrangle
 *Check Houdini project to get the best idea of how it works.*
 ```C
 // we can access fields as in the SOPs, pig_in name
@@ -539,10 +515,8 @@ f@pig_in *= .9;
 // to the volume you want to access
 //f@pig_in = volumesample(0, "pig_in", v@P - {0.01});
 ```
-<br>
 
-#### DOPs / Gas Field Wrangle - accessing DOPs and SOPs data
-
+## DOPs / Gas Field Wrangle - accessing DOPs and SOPs data
 ```C
 // it is also possible to access DOP fields using this syntax
 // we can sample "pig_mask" without setting the field "Inputs"
@@ -564,9 +538,7 @@ f@pig_in *= 1-pig_mask;
 ```
 ![Gas Field Wrangle - DOPs and SOPs data](./img/gas_field_wrangle_dop_sop_data.jpg)
 
-<br>
-
-#### DOPs / Geometry workflow
+## DOPs / Geometry workflow
 Here I will show basic steps of creating a simple custom DOP solver operating on volumes.
 
 1. At first we need to create a *DOP Object*, which is a container that will contain all our fields (volumes in DOPs), geometry and any other data. Object name is important, because later we will use it to access our data.
@@ -580,9 +552,8 @@ Also note, that *Geometry Wrangle* and *Geometry VOP* have an option to use *Mys
 ![Geometry VOP Myself](./img/geo_vop_inputs_myself.jpg)
 4. We can as well use *SOP Solver* to process our geometry in a SOP network.
 ![SOP Solver geo](./img/sop_solver_geo.jpg)
-<br>
 
-#### DOPs / Geometry Wrangle
+## DOPs / Geometry Wrangle
 *Check Houdini project to get the best idea of how it works.*
 ```C
 // we can access attributes from "Geometry" data in our "box"
@@ -591,9 +562,8 @@ Also note, that *Geometry Wrangle* and *Geometry VOP* have an option to use *Mys
 // to properly set "Input 1" in "Inputs" tab of this node
 v@P *= 1.1;
 ```
-<br>
 
-#### DOPs / Geometry Wrangle - accessing fields
+## DOPs / Geometry Wrangle - accessing fields
 [link to explanation](#dops--gas-field-wrangle---accessing-dops-and-sops-data)
 ```C
 // we can also access DOP fields from Geometry Wrangle, it is explained in:
@@ -609,9 +579,7 @@ mask = volumesample("op:../" + ":box/pig_mask", 0, v@P);
 if (mask != 0) v@Cd = {1,0,0};
 ```
 
-<br>
-
-#### Conditions
+## Conditions
 ```C
 // it there is only one statement after if condition, it
 // can be written in the same line
@@ -635,9 +603,7 @@ if (v@P.y < 0 && v@P.x > 0) v@P -= v@N * .3;
 if (v@Cd == {0,0,1} || v@Cd == {1,0,0}) v@P += v@N * .4;
 ```
 
-<br>
-
-#### Loops
+## Loops
 *Check Houdini project to get the best idea of how it works.*
 ```C
 // VEX uses C-like syntax for for-loops
@@ -687,9 +653,7 @@ P_avg_upper /= count;
 v@P = P_avg_upper;
 ```
 
-<br>
-
-#### Stopping For-Each SOP from VEX
+## Stopping For-Each SOP from VEX
 ```C
 // in this example we are offseting our points along X axis in each iteration
 //
@@ -708,9 +672,7 @@ v@P.x += .3;
 if (v@P.x > 30) setdetailattrib(0, "repeat", 0, "set");
 ```
 
-<br>
-
-#### Printing and formatting
+## Printing and formatting
 ```C
 // Windows - check console window which 
 // should pop up automatically
@@ -785,17 +747,15 @@ printf(multiLine);
 
 printf("\n\n");
 ```
-<br>
 
-#### Printing attributes
+## Printing attributes
 ```C
 printf("s\@shop_materialpath (string): %+s, v\@P (vector): %+-10.3f, \@ptnum (integer): %5d \n", s@shop_materialpath, v@P, @ptnum);
 
 printf("\n\n");
 ```
-<br>
 
-#### Including external VEX files
+## Including external VEX files
 ```C
 #include "myLib.h"
 
@@ -821,9 +781,8 @@ function void myRemPoints(int ptnum) {
     	removepoint(0, ptnum);
 }
 ```
-<br>
 
-#### Include math.h
+## Include math.h
 ```C
 #include "math.h"
 
@@ -888,9 +847,8 @@ part of the $HH/vex/include/math.h file:
 #define XFORM_ZYX       5       // Rotate order Z, Y, X
 */
 ```
-<br>
 
-#### Using macros
+## Using macros
 ```C
 #include "myLib.h"
 
@@ -919,9 +877,8 @@ i@add_ten = ADDTEN(10);
 // or use macros for defining new functions
 #define ADDTEN(val)	 	(val+10)
 ```
-<br>
 
-#### Functions
+## Functions
 ```C
 #include "myLib.h"
 
@@ -988,9 +945,8 @@ int[] range(int max) {
 	return out;
 }
 ```
-<br>
 
-#### Functions overloading
+## Functions overloading
 ```C
 #include "myLib.h"
 
@@ -1062,9 +1018,8 @@ float randomizeN(vector N; float amount; int seed) {
 	return randDir;
 }
 ```
-<br>
 
-#### Variables casting
+## Variables casting
 ```C
 #include "myLib.h"
 
@@ -1085,9 +1040,8 @@ color = pow(color, 3); // make color more contrasty
 // assigning a float to vector will assign uniform vector: { color, color, color }
 v@Cd = color;
 ```
-<br>
 
-#### Vectors swizzling
+## Vectors swizzling
 ```C
 vector col = {.1, .3, .7};
 
@@ -1105,9 +1059,8 @@ col = col.zzy; // this syntax is equivalent to the following line
 
 v@Cd = col;
 ```
-<br>
 
-#### Functions casting
+## Functions casting
 ```C
 #include "myLib.h"
 
@@ -1125,9 +1078,8 @@ v@Cd = dot(v@N, normalize( vector( rand(@ptnum) ) ) ) * 0.5 + 0.5;
 // this now works fine
 //v@Cd = length( vector( rand(v@P) ) ) * .5;
 ```
-<br>
 
-#### Structs
+## Structs
 ```C
 #include "myLib.h"
 // in this node I will show some examples of using structs, they will be defined in myLib.h
@@ -1315,9 +1267,8 @@ hipFile[] findAllHipFiles(string text) {
 	return hips;
 }
 ```
-<br>
 
-#### Structs in Attribute Wrangle
+## Structs in Attribute Wrangle
 ```C
 // VEX does not allow defining structs inside this field, they need to be defined
 // externally, either in a .h file, or in "Outer Code" string parameter of "snippet1"
@@ -1348,9 +1299,8 @@ struct hipFile {
 
 #define MY_INT  123456
 ```
-<br>
 
-#### Groups
+## Groups
 ```C
 // it is also possible to manipulate group membership through VEX, group names
 // are bound by default with i@group_name syntax (int value: 0 - not member, 1 - member)
@@ -1379,9 +1329,7 @@ int pt_group_red = inpointgroup(0, "red", pt_reflected);
 i@group_blue = pt_group_red;
 ```
 
-<br>
-
-#### Attribute typeinfo
+## Attribute typeinfo
 ```C
 /*
 It is possible to assign a meaning to attributes. Houdini will understand this meaning and
@@ -1416,9 +1364,7 @@ setattribtypeinfo(0, "point", "Cd", "point");
 setattribtypeinfo(0, "point", "N", "color");
 ```
 
-<br>
-
-#### Attributes to create
+## Attributes to create
 ```C
 // when dealing with more code you might often run into
 // errors caused by typos, when you mistype an attribute
@@ -1433,9 +1379,7 @@ v@Cd = {1,0,1};
 //v@n = {0,1,0};
 ```
 
-<br>
-
-#### Enforce prototypes
+## Enforce prototypes
 ```C
 // If we want to be even more organized, we can use "Enforce Prototypes" option 
 // in Wrangles, it is handy with larger code projects as it helps with 
@@ -1462,9 +1406,7 @@ int B = 4;
 @new_int_array_attrib = {1,2,3,4};
 ```
 
-<br>
-
-#### Attribute default values
+## Attribute default values
 ```C
 // It is also possible to set default values for attributes from VEX.
 // It replicates behavior of "Default" parameter in Attribute Create SOP,
@@ -1496,16 +1438,16 @@ f@pscale = 7.0;
 i@id = 0;
 ```
 
-<br>
+# Resources & More
+In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.
 
-### Resources & More
-In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
-For more practical and visual VEX examples check [Matt Estela's awesome wiki](http://www.tokeru.com/cgwiki/?title=HoudiniVex)<br>
-Another good source is *$HH/vex/include* folder which is full of VEX include files with many useful functions. *( $HH expands to /houdini_install_dir/houdini/ )*<br>
-Make sure to watch this very cool [VEX Masterclass](https://vimeo.com/173658697) by Jeff Wagner. <br>
+For more practical and visual VEX examples check [Matt Estela's awesome wiki](http://www.tokeru.com/cgwiki/?title=HoudiniVex)
+
+Another good source is *$HH/vex/include* folder which is full of VEX include files with many useful functions. *( $HH expands to /houdini_install_dir/houdini/ )*
+
+Make sure to watch this very cool [VEX Masterclass](https://vimeo.com/173658697) by Jeff Wagner.
+
 VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/vex/lang) and [functions](http://www.sidefx.com/docs/houdini/vex/functions/index.html) pages are very helpful too.
 
-<br>
-
-### Feedback & Suggestions
+# Feedback & Suggestions
 Please let [me](https://jtomori.github.io) know if you find any mistakes or have ideas for improvements.
