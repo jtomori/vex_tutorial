@@ -1497,11 +1497,6 @@ i@id = 0;
 
 <br>
 
-### Todo
-* any suggestions? :)
-
-<br>
-
 ### Resources & More
 In this tutorial I am focusing on VEX syntax, capabilities and integration in Houdini.<br>
 For more practical and visual VEX examples check [Matt Estela's awesome wiki](http://www.tokeru.com/cgwiki/?title=HoudiniVex)<br>
@@ -1512,9 +1507,4 @@ VEX is well documented, [language reference](http://www.sidefx.com/docs/houdini/
 <br>
 
 ### Feedback & Suggestions
-Please let me know if you find any mistakes or have ideas for improvements. I will fix it and push it to this repo :)
-
-<br>
-
-### Contributing
-Feel free to contribute to this project by creating pull requests or by [buying me a beer :)](https://www.paypal.me/jurajtomori)
+Please let [me](https://jtomori.github.io) know if you find any mistakes or have ideas for improvements.
